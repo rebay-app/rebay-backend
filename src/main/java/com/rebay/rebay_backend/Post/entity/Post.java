@@ -1,5 +1,6 @@
 package com.rebay.rebay_backend.Post.entity;
 
+import com.rebay.rebay_backend.social.entity.Like;
 import com.rebay.rebay_backend.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -60,6 +61,9 @@ public class Post {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<Like> likes = new HashSet<>();
 
 
 

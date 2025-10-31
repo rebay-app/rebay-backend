@@ -4,6 +4,7 @@ package com.rebay.rebay_backend.Post.controller;
 import com.rebay.rebay_backend.Post.dto.PostRequest;
 import com.rebay.rebay_backend.Post.dto.PostResponse;
 import com.rebay.rebay_backend.Post.service.PostService;
+import com.rebay.rebay_backend.social.service.LikeService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -12,12 +13,15 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/posts")
 @RequiredArgsConstructor
 public class PostController {
 
     private final PostService postService;
+    private final LikeService likeService;
 
     @PostMapping
     public ResponseEntity<PostResponse> createdPost(@Valid @RequestBody PostRequest request) {
@@ -65,5 +69,16 @@ public class PostController {
 
         postService.deletePost(postId);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("{postId}/like")
+    public ResponseEntity<?> toggleLike(@PathVariable Long postId) {
+        boolean isLiked = likeService.toggleLike(postId);
+        Long likeCount = likeService.getLikeCount(postId);
+
+        return ResponseEntity.ok().body(Map.of(
+                "isLiked", isLiked,
+                "likeCount", likeCount)
+        );
     }
 }
