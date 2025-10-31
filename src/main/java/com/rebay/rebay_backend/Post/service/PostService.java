@@ -6,6 +6,7 @@ import com.rebay.rebay_backend.Post.entity.Post;
 import com.rebay.rebay_backend.Post.entity.SaleStatus;
 import com.rebay.rebay_backend.Post.exception.UnauthorizedException;
 import com.rebay.rebay_backend.Post.repository.PostRepository;
+import com.rebay.rebay_backend.social.repository.LikeRepository;
 import com.rebay.rebay_backend.user.entity.User;
 import com.rebay.rebay_backend.user.exception.ResourceNotFoundException;
 import com.rebay.rebay_backend.user.service.AuthenticationService;
@@ -21,7 +22,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final AuthenticationService authenticationService;
-
+    private final LikeRepository likeRepository;
 
     public PostResponse createPost(PostRequest request) {
 
@@ -49,6 +50,12 @@ public class PostService {
         Page<Post> posts = postRepository.findAllWithUser(pageable);
         return posts.map(post -> {
             PostResponse response = PostResponse.from(post);
+            Long likeCount = likeRepository.countByPostId(post.getId());
+            boolean isLiked = likeRepository.existsByUserAndPost(currentUser, post);
+
+            response.setLiked(isLiked);
+            response.setLikeCount(likeCount);
+
             return response;
         });
     }
@@ -59,6 +66,11 @@ public class PostService {
         Page<Post> posts = postRepository.findByUserId(userId, pageable);
         return posts.map(post -> {
             PostResponse response = PostResponse.from(post);
+            Long likeCount = likeRepository.countByPostId(post.getId());
+            boolean isLiked = likeRepository.existsByUserAndPost(currentUser, post);
+
+            response.setLiked(isLiked);
+            response.setLikeCount(likeCount);
             return response;
         });
     }

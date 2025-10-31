@@ -28,6 +28,8 @@ public class PostResponse {
     private UserDto user;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private  boolean isLiked;
+    private Long likeCount;
 
 
     public static PostResponse from(Post post) {

@@ -2,6 +2,7 @@ package com.rebay.rebay_backend.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rebay.rebay_backend.Post.entity.Post;
+import com.rebay.rebay_backend.social.entity.Like;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -65,6 +66,10 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
     @Builder.Default
     private Set<Post> posts = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<Like> likes = new HashSet<>();
 
     @PrePersist
     protected void onCreate() { enabled = true; }
