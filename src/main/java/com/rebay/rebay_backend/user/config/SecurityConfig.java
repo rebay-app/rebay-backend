@@ -28,7 +28,9 @@ public class SecurityConfig {
                 auth -> auth
                         .requestMatchers(
                                 "/api/auth/**",
-                                "/error"
+                                "/error",
+                                "/api/notifications/dev/**",   // 스트림/보내기 테스트
+                                "/sse-test.html"             // (옵션) 정적 테스트 페이지
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
