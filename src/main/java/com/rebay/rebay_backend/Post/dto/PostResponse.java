@@ -10,6 +10,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Data
 @Builder
@@ -30,6 +32,8 @@ public class PostResponse {
     private LocalDateTime updatedAt;
     private  boolean isLiked;
     private Long likeCount;
+    private List<HashtagResponse> hashtags;
+
 
 
     public static PostResponse from(Post post) {
@@ -43,6 +47,9 @@ public class PostResponse {
                 .category(post.getCategory())
                 .viewCount(post.getViewCount())
                 .status(post.getStatus())
+                .hashtags(post.getHashtags().stream()
+                        .map(HashtagResponse::from)
+                        .collect(Collectors.toList()))
                 .user(UserDto.fromEntity(post.getUser()))
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())

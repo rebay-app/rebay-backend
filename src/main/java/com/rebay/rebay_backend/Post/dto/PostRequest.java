@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 public class PostRequest {
@@ -28,6 +29,8 @@ public class PostRequest {
     private SaleStatus status;
 
     private String imageUrl;
+
+    private List<String> hashtags;
 
 
 

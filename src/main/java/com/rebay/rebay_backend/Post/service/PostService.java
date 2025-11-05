@@ -2,9 +2,11 @@ package com.rebay.rebay_backend.Post.service;
 
 import com.rebay.rebay_backend.Post.dto.PostRequest;
 import com.rebay.rebay_backend.Post.dto.PostResponse;
+import com.rebay.rebay_backend.Post.entity.Hashtag;
 import com.rebay.rebay_backend.Post.entity.Post;
 import com.rebay.rebay_backend.Post.entity.SaleStatus;
 import com.rebay.rebay_backend.Post.exception.UnauthorizedException;
+import com.rebay.rebay_backend.Post.repository.HashTagRepository;
 import com.rebay.rebay_backend.Post.repository.PostRepository;
 import com.rebay.rebay_backend.social.repository.LikeRepository;
 import com.rebay.rebay_backend.user.entity.User;
@@ -18,11 +20,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class PostService {
 
     private final PostRepository postRepository;
     private final AuthenticationService authenticationService;
     private final LikeRepository likeRepository;
+    private final HashTagRepository hashTagRepository;
 
     public PostResponse createPost(PostRequest request) {
 
@@ -37,6 +41,20 @@ public class PostService {
                 .status(SaleStatus.ON_SALE)
                 .user(currentUser)
                 .build();
+
+
+        if (request.getHashtags() != null && !request.getHashtags().isEmpty()) {
+            for (String hashName : request.getHashtags()) {
+                Hashtag hashtag = hashTagRepository.findByName(hashName)
+                        .orElseGet(() -> hashTagRepository.save(
+                                Hashtag.builder()
+                                        .name(hashName)
+                                        .build()
+                        ));
+                post.addHashtag(hashtag);
+
+            }
+        }
 
         Post savedPost = postRepository.save(post);
 
@@ -105,6 +123,21 @@ public class PostService {
         post.setCategory(request.getCategory());
         post.setStatus(request.getStatus() == null ? SaleStatus.ON_SALE: request.getStatus() );
         post.setImageUrl(request.getImageUrl());
+
+        post.getHashtags().clear();
+
+        if (request.getHashtags() != null && !request.getHashtags().isEmpty()) {
+            for (String hashName : request.getHashtags()) {
+                Hashtag hashtag = hashTagRepository.findByName(hashName)
+                        .orElseGet(() -> hashTagRepository.save(
+                                Hashtag.builder()
+                                        .name(hashName)
+                                        .build()
+                        ));
+                post.addHashtag(hashtag);
+
+            }
+        }
 
         Post updatedPost = postRepository.save(post);
         return PostResponse.from(updatedPost);
