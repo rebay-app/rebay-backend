@@ -20,6 +20,7 @@ public class UserResponse {
     private Long followersCount;
     private Long followingCount;
     private boolean isFollowing;
+    private boolean isEnabled;
 
     private String accessToken;
     private String refreshToken;
