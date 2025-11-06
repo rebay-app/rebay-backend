@@ -78,17 +78,4 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
     }
-
-    @Override
-    public boolean isEnabled() { return enabled; }
-
-    @Override
-    public String getUsername() {
-        return username; // 기존 필드 username을 반환
-    }
-
-    @Override
-    public String getPassword() {
-        return password; // 기존 필드 password(암호화된)를 반환
-    }
 }
