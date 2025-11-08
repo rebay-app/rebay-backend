@@ -1,6 +1,7 @@
 package com.rebay.rebay_backend.payment.entity;
 
 import com.rebay.rebay_backend.Post.entity.Post;
+import com.rebay.rebay_backend.review.entity.Review;
 import com.rebay.rebay_backend.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -10,6 +11,8 @@ import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "transactions")
@@ -49,6 +52,9 @@ public class Transaction {
     @Column(nullable = false)
     @CreationTimestamp
     private LocalDateTime createdAt;
+
+    @OneToOne(mappedBy = "transaction", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Review review;
 
     public void confirmPayment() {
         this.status = TransactionStatus.PAID;
