@@ -17,6 +17,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +34,11 @@ public class ReviewService {
                 .orElseThrow(()-> new ResourceNotFoundException("해당 거래가 없습니다."));
 
         if (!currentUser.getId().equals(currentTransaction.getBuyer().getId())) {
-            throw new RuntimeException("본인이 구매한 상품만 리뷰 작성할 수 있습니다.");
+            throw new RuntimeException("본인이 구매한 상품만 후기를 작성할 수 있습니다.");
+        }
+
+        if (!currentTransaction.getIsReceived().equals(Boolean.TRUE)) {
+            throw new RuntimeException("배송이 완료된 상품만 후기를 작성할 수 있습니다.");
         }
 
         Review review = Review.builder()
@@ -101,5 +106,9 @@ public class ReviewService {
         return reviews.map(review -> {
             return ReviewDto.fromEntity(review);
         });
+    }
+
+    public Long getReviewsCountByUser(Long userId) {
+        return reviewRepository.countByTransactionSellerId(userId);
     }
 }
