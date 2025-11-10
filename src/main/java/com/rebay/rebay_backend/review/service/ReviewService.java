@@ -17,6 +17,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
@@ -105,5 +106,9 @@ public class ReviewService {
         return reviews.map(review -> {
             return ReviewDto.fromEntity(review);
         });
+    }
+
+    public Long getReviewsCountByUser(Long userId) {
+        return reviewRepository.countByTransactionSellerId(userId);
     }
 }

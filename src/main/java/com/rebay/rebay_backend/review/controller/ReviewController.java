@@ -12,6 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/review")
@@ -64,4 +67,12 @@ public class ReviewController {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(reviewService.getSellerReviews(sellerId, pageable));
     }
+
+    @GetMapping("/counts/{sellerId}")
+    public ResponseEntity<Map<String,Long>> getReviewsCountByUser(@PathVariable Long sellerId) {
+        Map<String,Long> reviewCounts = new HashMap<>();
+        reviewCounts.put("count", reviewService.getReviewsCountByUser(sellerId));
+        return ResponseEntity.ok(reviewCounts);
+    }
+
 }
