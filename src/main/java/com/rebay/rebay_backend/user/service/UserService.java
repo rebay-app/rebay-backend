@@ -8,6 +8,7 @@ import com.rebay.rebay_backend.user.dto.UserUpdateRequest;
 import com.rebay.rebay_backend.user.entity.User;
 import com.rebay.rebay_backend.user.exception.InvalidPasswordException;
 import com.rebay.rebay_backend.user.exception.ResourceNotFoundException;
+import com.rebay.rebay_backend.user.exception.UserAlreadyExistsException;
 import com.rebay.rebay_backend.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,13 +31,19 @@ public class UserService {
         User currentUser = authenticationService.getCurrentUser();
 
         // username, email, 중복확인
-        if (!userRepository.existsByUsername(request.getUsername())) {
-            currentUser.setUsername(request.getUsername());
+        if (userRepository.existsByUsername(request.getUsername())) {
+            if (!currentUser.getUsername().equals(request.getUsername())) {
+                throw new UserAlreadyExistsException("동일한 username이 존재합니다.");
+            }
         }
+        currentUser.setUsername(request.getUsername());
 
-        if (!userRepository.existsByEmail(request.getEmail())) {
-            currentUser.setEmail(request.getEmail());
+        if (userRepository.existsByEmail(request.getEmail())) {
+            if (currentUser.getEmail().equals(request.getEmail())) {
+                throw new UserAlreadyExistsException("동일한 이메일이 존재합니다.");
+            }
         }
+        currentUser.setEmail(request.getEmail());
 
         currentUser.setFullName(request.getFullName());
         currentUser.setBio(request.getBio());
