@@ -71,7 +71,7 @@ public class ReviewController {
     @GetMapping("/counts/{sellerId}")
     public ResponseEntity<Map<String,Long>> getReviewsCountByUser(@PathVariable Long sellerId) {
         Map<String,Long> reviewCounts = new HashMap<>();
-        reviewCounts.put("count", reviewService.getReviewsCountByUser(sellerId));
+        reviewCounts.put("review", reviewService.getReviewsCountByUser(sellerId));
         return ResponseEntity.ok(reviewCounts);
     }
 
