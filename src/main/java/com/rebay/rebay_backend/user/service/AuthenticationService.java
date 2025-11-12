@@ -18,7 +18,8 @@ public class AuthenticationService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || authentication.getPrincipal() == null) {
-            throw new ResourceNotFoundException("No authenticated user found");
+            throw new ResourceNotFoundException("인증된 사용자를 찾을 수 없습니다.");
+//            throw new ResourceNotFoundException("No authenticated user found");
         }
 
         String username;
@@ -35,6 +36,7 @@ public class AuthenticationService {
 
         return userRepository.findByUsername(username)
                 .or(() -> userRepository.findByEmail(username))
-                .orElseThrow(() -> new ResourceNotFoundException("User not found for username: " + username));
+                .orElseThrow(() -> new ResourceNotFoundException("사용자를 찾을 수 없습니다. : " + username));
+//                .orElseThrow(() -> new ResourceNotFoundException("User not found for username: " + username));
     }
 }

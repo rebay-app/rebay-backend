@@ -8,5 +8,5 @@ import lombok.Data;
 @Builder
 public class ReviewRequest {
     private String content;
-    private StarRating rating;
+    private int rating;
 }
