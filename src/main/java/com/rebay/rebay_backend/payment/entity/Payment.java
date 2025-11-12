@@ -22,7 +22,7 @@ public class Payment {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="transaction_id", unique = true, nullable = false)
+    @JoinColumn(name = "transaction_id", unique = true, nullable = false)
     private Transaction transaction;      // 주문 정보
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -55,6 +55,9 @@ public class Payment {
     private LocalDateTime approvedAt;   // 결제 시간
 
     @Column
+    private LocalDateTime settledAt;  // 정산이 완료된 시간
+
+    @Column
     private String receiptUrl;  // 영수증 주소
 
     public static Payment create(Transaction transaction, String orderId, BigDecimal amount) {
@@ -73,5 +76,10 @@ public class Payment {
         this.paymentStatus = PaymentStatus.DONE;
         this.approvedAt = LocalDateTime.now();
         this.receiptUrl = receiptUrl;
+    }
+
+    public void settle() {
+        this.paymentStatus = PaymentStatus.SETTLED;
+        this.settledAt = LocalDateTime.now();
     }
 }

@@ -9,7 +9,9 @@ import java.util.Optional;
 @Repository
 public interface WebhookEventRepository extends JpaRepository<WebhookEvent, Long> {
 
+    // eventId로 Webhook event 조회
     Optional<WebhookEvent> findByEventId(String eventId);
 
+    // eventId 존재 여부 확인
     boolean existsByEventId(String eventId);
 }
