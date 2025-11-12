@@ -14,6 +14,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.HashSet;
@@ -53,6 +54,10 @@ public class User implements UserDetails {
 
     private String providerId;
 
+    @Column(nullable = false)
+    @Builder.Default
+    private BigDecimal totalPoints = BigDecimal.ZERO; // 판매자에게 정산된 총 적립금
+
     @CreationTimestamp
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
@@ -81,5 +86,9 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_USER"));
+    }
+
+    public void addPoints(BigDecimal amount) {
+        this.totalPoints = this.totalPoints.add(amount);
     }
 }

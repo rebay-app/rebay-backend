@@ -56,8 +56,15 @@ public class Transaction {
     @OneToOne(mappedBy = "transaction", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private Review review;
 
+    public void confirmReceipt() {
+        this.isReceived = true;
+        this.receivedAt = LocalDateTime.now();
+        this.status = TransactionStatus.SETTLEMENT_PENDING;
+    }
+
     public void confirmPayment() {
         this.status = TransactionStatus.PAID;
     }
 
+    public void completeSettlement() { this.status = TransactionStatus.COMPLETED; }
 }
