@@ -33,13 +33,16 @@ public class ReviewService {
 
         Transaction currentTransaction = transactionRepository.findById(transactionId)
                 .orElseThrow(()-> new ResourceNotFoundException("해당 거래가 없습니다."));
+//                .orElseThrow(()-> new ResourceNotFoundException("Transaction not found."));
 
         if (!currentUser.getId().equals(currentTransaction.getBuyer().getId())) {
-            throw new RuntimeException("본인이 구매한 상품만 후기를 작성할 수 있습니다.");
+            throw new AccessDeniedException("본인이 구매한 상품만 후기를 작성할 수 있습니다.");
+//            throw new AccessDeniedException("Only the buyer can write a review for this product.");
         }
 
         if (!currentTransaction.getIsReceived().equals(Boolean.TRUE)) {
-            throw new RuntimeException("배송이 완료된 상품만 후기를 작성할 수 있습니다.");
+            throw new AccessDeniedException("배송이 완료된 상품만 후기를 작성할 수 있습니다.");
+//            throw new AccessDeniedException("Only products with completed delivery can be reviewed.");
         }
 
         Review review = Review.builder()
@@ -59,9 +62,11 @@ public class ReviewService {
 
         Review currentReview = reviewRepository.findById(reviewId)
                 .orElseThrow(()-> new ResourceNotFoundException("해당 리뷰가 없습니다."));
+//                .orElseThrow(()-> new ResourceNotFoundException("Review not found."));
 
         if (!currentReview.getReviewer().getId().equals(currentUser.getId())) {
             throw new AccessDeniedException("리뷰를 수정할 권한이 없습니다.");
+//            throw new AccessDeniedException("You are not authorized to modify this review.");
         }
 
         if (request.getContent() != null) {
@@ -81,9 +86,11 @@ public class ReviewService {
 
         Review currentReview = reviewRepository.findById(reviewId)
                 .orElseThrow(()-> new ResourceNotFoundException("해당 리뷰가 없습니다."));
+//                .orElseThrow(()-> new ResourceNotFoundException("Review not found."));
 
         if (!currentReview.getReviewer().equals(currentUser)) {
-            throw new RuntimeException("리뷰를 삭제할 권한이 없습니다.");
+            throw new AccessDeniedException("리뷰를 삭제할 권한이 없습니다.");
+//            throw new AccessDeniedException("You are not authorized to delete this review.");
         }
 
         reviewRepository.delete(currentReview);
@@ -92,6 +99,8 @@ public class ReviewService {
     public ReviewDto getReview(Long reviewId) {
         Review currentReview = reviewRepository.findById(reviewId)
                 .orElseThrow(()-> new ResourceNotFoundException("해당 리뷰가 없습니다."));
+//                .orElseThrow(()-> new ResourceNotFoundException("Review not found."));
+
         return ReviewDto.fromEntity(currentReview);
     }
 

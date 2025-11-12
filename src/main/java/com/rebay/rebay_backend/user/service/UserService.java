@@ -34,6 +34,7 @@ public class UserService {
         if (userRepository.existsByUsername(request.getUsername())) {
             if (!currentUser.getUsername().equals(request.getUsername())) {
                 throw new UserAlreadyExistsException("동일한 username이 존재합니다.");
+                //throw new UserAlreadyExistsException("Username already exists");
             }
         }
         currentUser.setUsername(request.getUsername());
@@ -41,6 +42,7 @@ public class UserService {
         if (userRepository.existsByEmail(request.getEmail())) {
             if (!currentUser.getEmail().equals(request.getEmail())) {
                 throw new UserAlreadyExistsException("동일한 이메일이 존재합니다.");
+                //throw new UserAlreadyExistsException("Email already exists");
             }
         }
         currentUser.setEmail(request.getEmail());
@@ -57,7 +59,8 @@ public class UserService {
     public UserResponse getUserProfile(Long userId) {
         User currentUser = authenticationService.getCurrentUser();
         User targetUser = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found for userId: " + userId));
+                .orElseThrow(() -> new ResourceNotFoundException("사용자를 찾을 수 없습니다. : " + userId));
+//                .orElseThrow(() -> new ResourceNotFoundException("User not found for userId: " + userId));
 
         Long followerCount = followRepository.countFollowers(targetUser);
         Long followingCount = followRepository.countFollowing(targetUser);
@@ -84,11 +87,14 @@ public class UserService {
         // request 의 new password 가 현재비밀번호와 동일할 때 예외
         if (passwordEncoder.matches(request.getNewPassword(), currentUser.getPassword())) {
             throw new InvalidPasswordException("바꿀 비밀번호가 현재 비밀번호와 동일합니다.");
+//            throw new InvalidPasswordException("The new password must be different from the current password.");
+
         }
 
         // request 의 old password 가 현재 패스워드와 동일하지 않으면 예외
         if (!passwordEncoder.matches(request.getCurrentPassword(), currentUser.getPassword())) {
             throw new InvalidPasswordException("현재 비밀번호가 동일하지 않습니다.");
+//            throw new InvalidPasswordException("Current password does not match.");
         }
 
         currentUser.setPassword(passwordEncoder.encode(request.getNewPassword()));
