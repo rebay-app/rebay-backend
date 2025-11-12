@@ -22,7 +22,7 @@ public class ReviewDto {
     private Long transactionId;
     private String postName;
     private String content;
-    private StarRating rating;
+    private int rating;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
@@ -33,7 +33,7 @@ public class ReviewDto {
                 .transactionId(review.getTransaction().getId())
                 .postName(review.getTransaction().getPost().getTitle())
                 .content(review.getContent())
-                .rating(review.getRating())
+                .rating(review.getRating().getValue())
                 .createdAt(review.getCreatedAt())
                 .updatedAt(review.getUpdatedAt())
                 .build();

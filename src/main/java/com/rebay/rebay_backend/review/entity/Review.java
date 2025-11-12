@@ -35,6 +35,8 @@ public class Review {
     private Transaction transaction;
 
     private String content;
+
+    @Enumerated(EnumType.ORDINAL)
     @Column(nullable = false)
     private StarRating rating;
 
