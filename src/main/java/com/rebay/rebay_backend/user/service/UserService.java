@@ -39,7 +39,7 @@ public class UserService {
         currentUser.setUsername(request.getUsername());
 
         if (userRepository.existsByEmail(request.getEmail())) {
-            if (currentUser.getEmail().equals(request.getEmail())) {
+            if (!currentUser.getEmail().equals(request.getEmail())) {
                 throw new UserAlreadyExistsException("동일한 이메일이 존재합니다.");
             }
         }

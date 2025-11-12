@@ -5,6 +5,7 @@ import com.rebay.rebay_backend.payment.repository.TransactionRepository;
 import com.rebay.rebay_backend.review.dto.ReviewDto;
 import com.rebay.rebay_backend.review.dto.ReviewRequest;
 import com.rebay.rebay_backend.review.entity.Review;
+import com.rebay.rebay_backend.review.entity.StarRating;
 import com.rebay.rebay_backend.review.repository.ReviewRepository;
 import com.rebay.rebay_backend.user.entity.User;
 import com.rebay.rebay_backend.user.exception.ResourceNotFoundException;
@@ -45,7 +46,7 @@ public class ReviewService {
                 .reviewer(currentUser)
                 .transaction(currentTransaction)
                 .content(request.getContent())
-                .rating(request.getRating())
+                .rating(StarRating.of(request.getRating()))
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
@@ -67,8 +68,8 @@ public class ReviewService {
             currentReview.setContent(request.getContent());
         }
 
-        if (request.getRating() != null) {
-            currentReview.setRating(request.getRating());
+        if (request.getRating() != 0) {
+            currentReview.setRating(StarRating.of(request.getRating()));
         }
 
         currentReview.setUpdatedAt(LocalDateTime.now());
@@ -95,14 +96,14 @@ public class ReviewService {
     }
 
     public Page<ReviewDto> getReviewerReviews(Long reviewerId, Pageable pageable) {
-        Page<Review> reviews = reviewRepository.findAllByReviewerId(reviewerId, pageable);
+        Page<Review> reviews = reviewRepository.findAllByReviewerIdOrderByCreatedAt(reviewerId, pageable);
         return reviews.map(review -> {
             return ReviewDto.fromEntity(review);
         });
     }
 
     public Page<ReviewDto> getSellerReviews(Long sellerId, Pageable pageable) {
-        Page<Review> reviews = reviewRepository.findAllByTransactionSellerId(sellerId, pageable);
+        Page<Review> reviews = reviewRepository.findAllByTransactionSellerIdOrderByCreatedAt(sellerId, pageable);
         return reviews.map(review -> {
             return ReviewDto.fromEntity(review);
         });

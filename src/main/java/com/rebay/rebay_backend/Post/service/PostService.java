@@ -157,6 +157,9 @@ public class PostService {
         postRepository.delete(post);
     }
 
+    public Long getPostsCountByUser(Long userId) {
+        return postRepository.countByUserId(userId);
+    }
 
 }
 

@@ -106,6 +106,18 @@ public class FollowService {
         });
     }
 
+    public Long getFollowersCount(Long userId) {
+        User targetUser = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        return followRepository.countFollowers(targetUser);
+    }
+
+    public Long getFollowingCount(Long userId) {
+        User targetUser = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+       return followRepository.countFollowing(targetUser);
+    }
+
     private UserResponse mapToUserResponse(User user, boolean isFollowing) {
         Long followersCount = followRepository.countFollowers(user);
         Long followingCount = followRepository.countFollowing(user);

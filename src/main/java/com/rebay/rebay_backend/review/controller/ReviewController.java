@@ -67,12 +67,4 @@ public class ReviewController {
         Pageable pageable = PageRequest.of(page, size);
         return ResponseEntity.ok(reviewService.getSellerReviews(sellerId, pageable));
     }
-
-    @GetMapping("/counts/{sellerId}")
-    public ResponseEntity<Map<String,Long>> getReviewsCountByUser(@PathVariable Long sellerId) {
-        Map<String,Long> reviewCounts = new HashMap<>();
-        reviewCounts.put("review", reviewService.getReviewsCountByUser(sellerId));
-        return ResponseEntity.ok(reviewCounts);
-    }
-
 }
