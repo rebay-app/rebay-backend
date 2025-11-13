@@ -2,6 +2,7 @@ package com.rebay.rebay_backend.user.entity;
 
 import com.rebay.rebay_backend.Post.entity.Post;
 import com.rebay.rebay_backend.review.entity.Review;
+import com.rebay.rebay_backend.search.entity.Search;
 import com.rebay.rebay_backend.social.entity.Like;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -79,6 +80,10 @@ public class User implements UserDetails {
     @OneToMany(mappedBy = "reviewer", fetch = FetchType.LAZY)
     @Builder.Default
     private Set<Review> reviews = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @Builder.Default
+    private Set<Search> searches = new HashSet<>();
 
     @PrePersist
     protected void onCreate() { enabled = true; }
