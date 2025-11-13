@@ -4,10 +4,10 @@ import com.rebay.rebay_backend.Post.entity.Post;
 import com.rebay.rebay_backend.Post.entity.ProductCategory;
 import com.rebay.rebay_backend.Post.entity.SaleStatus;
 import com.rebay.rebay_backend.user.dto.UserDto;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.rebay.rebay_backend.user.dto.UserResponse;
+import com.rebay.rebay_backend.user.service.UserService;
+import lombok.*;
+
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -27,16 +27,14 @@ public class PostResponse {
     private ProductCategory category;
     private SaleStatus status;
     private Integer viewCount;
-    private UserDto user;
+    private UserResponse user;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private  boolean isLiked;
     private Long likeCount;
     private List<HashtagResponse> hashtags;
 
-
-
-    public static PostResponse from(Post post) {
+    public static PostResponse from(Post post, UserResponse userResponse) {
 
         return PostResponse.builder()
                 .id(post.getId())
@@ -50,7 +48,7 @@ public class PostResponse {
                 .hashtags(post.getHashtags().stream()
                         .map(HashtagResponse::from)
                         .collect(Collectors.toList()))
-                .user(UserDto.fromEntity(post.getUser()))
+                .user(userResponse)
                 .createdAt(post.getCreatedAt())
                 .updatedAt(post.getUpdatedAt())
                 .build();

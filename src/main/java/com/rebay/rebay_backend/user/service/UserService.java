@@ -62,22 +62,7 @@ public class UserService {
                 .orElseThrow(() -> new ResourceNotFoundException("사용자를 찾을 수 없습니다. : " + userId));
 //                .orElseThrow(() -> new ResourceNotFoundException("User not found for userId: " + userId));
 
-        Long followerCount = followRepository.countFollowers(targetUser);
-        Long followingCount = followRepository.countFollowing(targetUser);
-        boolean isFollowing = followRepository.existsByFollowerAndFollowing(currentUser, targetUser);
-
-        return UserResponse.builder()
-                .id(targetUser.getId())
-                .username(targetUser.getUsername())
-                .email(targetUser.getEmail())
-                .fullName(targetUser.getFullName())
-                .profileImageUrl(targetUser.getProfileImageUrl())
-                .bio(targetUser.getBio())
-                .followersCount(followerCount)
-                .followingCount(followingCount)
-                .isFollowing(isFollowing)
-                .isEnabled(targetUser.isEnabled())
-                .build();
+        return mapToUserResponse(targetUser);
     }
 
     @Transactional
@@ -101,5 +86,25 @@ public class UserService {
 
         User savedUser = userRepository.save(currentUser);
         return true;
+    }
+
+    public UserResponse mapToUserResponse(User targetUser) {
+        User currentUser = authenticationService.getCurrentUser();
+
+        Long followersCount = followRepository.countFollowers(targetUser);
+        Long followingCount = followRepository.countFollowing(targetUser);
+        boolean isFollowing = followRepository.existsByFollowerAndFollowing(currentUser, targetUser);
+
+        return UserResponse.builder()
+                .id(targetUser.getId())
+                .username(targetUser.getUsername())
+                .email(targetUser.getEmail())
+                .fullName(targetUser.getFullName())
+                .profileImageUrl(targetUser.getProfileImageUrl())
+                .bio(targetUser.getBio())
+                .followersCount(followersCount)
+                .followingCount(followingCount)
+                .isFollowing(isFollowing)
+                .build();
     }
 }

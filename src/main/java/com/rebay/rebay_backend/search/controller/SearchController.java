@@ -3,6 +3,8 @@ package com.rebay.rebay_backend.search.controller;
 import com.rebay.rebay_backend.Post.dto.PostResponse;
 import com.rebay.rebay_backend.search.entity.SearchTarget;
 import com.rebay.rebay_backend.search.service.SearchService;
+import com.rebay.rebay_backend.user.dto.UserResponse;
+import com.rebay.rebay_backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class SearchController {
 
     private final SearchService searchService;
+    private final UserService userService;
 
 
     @GetMapping("/posts")
@@ -28,6 +31,7 @@ public class SearchController {
             @PageableDefault(size = 10, sort = "id", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         return searchService.searchPost(keyword, target, pageable)
-                .map(PostResponse::from);
+                .map(post -> { UserResponse userResponse = userService.mapToUserResponse(post.getUser());
+                    return PostResponse.from(post, userResponse);});
     }
 }

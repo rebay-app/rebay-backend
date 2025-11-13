@@ -9,9 +9,11 @@ import com.rebay.rebay_backend.Post.exception.UnauthorizedException;
 import com.rebay.rebay_backend.Post.repository.HashTagRepository;
 import com.rebay.rebay_backend.Post.repository.PostRepository;
 import com.rebay.rebay_backend.social.repository.LikeRepository;
+import com.rebay.rebay_backend.user.dto.UserResponse;
 import com.rebay.rebay_backend.user.entity.User;
 import com.rebay.rebay_backend.user.exception.ResourceNotFoundException;
 import com.rebay.rebay_backend.user.service.AuthenticationService;
+import com.rebay.rebay_backend.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +27,7 @@ public class PostService {
 
     private final PostRepository postRepository;
     private final AuthenticationService authenticationService;
+    private final UserService userService;
     private final LikeRepository likeRepository;
     private final HashTagRepository hashTagRepository;
 
@@ -57,8 +60,9 @@ public class PostService {
         }
 
         Post savedPost = postRepository.save(post);
+        UserResponse userResponse = userService.mapToUserResponse(currentUser);
 
-        return PostResponse.from(savedPost);
+        return PostResponse.from(savedPost, userResponse);
     }
 
     @Transactional(readOnly = true)
@@ -67,7 +71,8 @@ public class PostService {
 
         Page<Post> posts = postRepository.findAllWithUser(pageable);
         return posts.map(post -> {
-            PostResponse response = PostResponse.from(post);
+            UserResponse userResponse = userService.mapToUserResponse(post.getUser());
+            PostResponse response = PostResponse.from(post,userResponse);
             Long likeCount = likeRepository.countByPostId(post.getId());
             boolean isLiked = likeRepository.existsByUserAndPost(currentUser, post);
 
@@ -83,7 +88,8 @@ public class PostService {
         User currentUser = authenticationService.getCurrentUser();
         Page<Post> posts = postRepository.findByUserId(userId, pageable);
         return posts.map(post -> {
-            PostResponse response = PostResponse.from(post);
+            UserResponse userResponse = userService.mapToUserResponse(post.getUser());
+            PostResponse response = PostResponse.from(post, userResponse);
             Long likeCount = likeRepository.countByPostId(post.getId());
             boolean isLiked = likeRepository.existsByUserAndPost(currentUser, post);
 
@@ -101,8 +107,9 @@ public class PostService {
 
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
+        UserResponse userResponse = userService.mapToUserResponse(post.getUser());
 
-        return PostResponse.from(post);
+        return PostResponse.from(post, userResponse);
     }
 
 
@@ -140,7 +147,9 @@ public class PostService {
         }
 
         Post updatedPost = postRepository.save(post);
-        return PostResponse.from(updatedPost);
+        UserResponse userResponse = userService.mapToUserResponse(currentUser);
+
+        return PostResponse.from(updatedPost, userResponse);
     }
 
     public void deletePost(Long postId) {
