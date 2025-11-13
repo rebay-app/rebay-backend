@@ -40,9 +40,12 @@ out/
 .DS_Store
 Thumbs.db
 
-# 환경/비밀 정보
+# --- Env & secrets ---
 .env
-.env.local
+.env.*
+!.env.example
+
+# 환경/비밀 정보
 application.yml
 application-*.yml
 local.properties

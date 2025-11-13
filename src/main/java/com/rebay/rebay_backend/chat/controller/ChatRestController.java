@@ -1,0 +1,31 @@
+package com.rebay.rebay_backend.chat.controller;
+
+import com.rebay.rebay_backend.chat.dto.RoomMessageEvent;
+import com.rebay.rebay_backend.chat.repository.ChatMessageRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/api/chat")
+@RequiredArgsConstructor
+public class ChatRestController {
+
+    private final ChatMessageRepository repo;
+
+    @GetMapping("/rooms/{roomId}/messages")
+    public Page<RoomMessageEvent> getMessagesByRoomId(@PathVariable Long roomId,
+                                                      @RequestParam(defaultValue = "0") int page,
+                                                      @RequestParam(defaultValue = "30") int size) {
+        return repo.findByRoomIdOrderByIdDesc(roomId, PageRequest.of(page, size))
+                .map(m -> new RoomMessageEvent(
+                        m.getRoomId(),
+                        m.getId(),
+                        m.getSenderId(),
+                        m.getMessageType().name(),
+                        m.getContent(),
+                        m.getCreatedAt()
+                ));
+    }
+}
