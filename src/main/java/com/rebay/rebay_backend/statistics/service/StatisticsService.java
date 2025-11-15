@@ -2,6 +2,7 @@ package com.rebay.rebay_backend.statistics.service;
 
 import com.rebay.rebay_backend.Post.dto.HashtagResponse;
 import com.rebay.rebay_backend.Post.dto.PostResponse;
+import com.rebay.rebay_backend.Post.entity.Category;
 import com.rebay.rebay_backend.Post.entity.Post;
 import com.rebay.rebay_backend.Post.entity.ProductCategory;
 import com.rebay.rebay_backend.Post.repository.PostRepository;
@@ -95,7 +96,7 @@ public class StatisticsService {
             return getTopLikedProductsLastWeek();
         }
 
-        Map<ProductCategory, Long> likeScores = getLikeScores(currentUser.getId());
+        Map<Long, Long> likeScores = getLikeScores(currentUser.getId());
         Map<String, Double> searchScores = getSearchScores(currentUser.getId());
 
         List<RecommendedPostDto> scoredPosts = new ArrayList<>();
@@ -118,15 +119,12 @@ public class StatisticsService {
                 .collect(Collectors.toList());
     }
 
-    private Map<ProductCategory, Long> getLikeScores(Long userId) {
+    private Map<Long, Long> getLikeScores(Long userId) {
         List<Object[]> results = likeRepository.findLikedCategoryScoresAndPostIds(userId);
 
         return results.stream()
                 .collect(Collectors.toMap(
-                        arr -> {
-                            String categoryName = (String) arr[0];
-                            return ProductCategory.valueOf(categoryName.toUpperCase());
-                        },
+                        arr -> (Long) arr[0],
                         arr -> (Long) arr[1]
                 ));
     }
@@ -160,9 +158,9 @@ public class StatisticsService {
     }
 
     // 좋아요 기반 점수 계산 (예시: 카테고리 일치 시 빈도수 점수 부여)
-    private double calculateLikeScore(PostResponse post, Map<ProductCategory, Long> likeScores) {
-        ProductCategory category = post.getCategory();
-        return likeScores.getOrDefault(category, 0L).doubleValue();
+    private double calculateLikeScore(PostResponse post, Map<Long, Long> likeScores) {
+        Long categoryId = post.getCategoryId();
+        return likeScores.getOrDefault(categoryId, 0L).doubleValue();
     }
 
     // 검색 기반 점수 계산 (예시: 해시태그와 검색 키워드 일치 시 가중치 점수 부여)

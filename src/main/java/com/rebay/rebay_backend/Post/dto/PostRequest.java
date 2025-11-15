@@ -1,5 +1,6 @@
 package com.rebay.rebay_backend.Post.dto;
 
+import com.rebay.rebay_backend.Post.entity.Category;
 import com.rebay.rebay_backend.Post.entity.ProductCategory;
 import com.rebay.rebay_backend.Post.entity.SaleStatus;
 import jakarta.validation.constraints.NotBlank;
@@ -24,7 +25,7 @@ public class PostRequest {
     private BigDecimal price;
 
     @NotNull(message = "Category is required")
-    private ProductCategory category;
+    private Category category;
 
     private SaleStatus status;
 
