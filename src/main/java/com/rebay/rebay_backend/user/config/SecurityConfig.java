@@ -41,6 +41,10 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/auth/**",
                                 "/error",
+                                "/api/upload/post/image",
+                                "/api/statistics/top10Keyword",
+                                "/api/statistics/popular",
+                                "/api/statistics/averageEarning",
                                 "/api/notifications/dev/**",   // 스트림/보내기 테스트
                                 "/sse-test.html",             // (옵션) 정적 테스트 페이지
                                 "/ws/**" // websocket

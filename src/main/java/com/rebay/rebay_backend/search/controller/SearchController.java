@@ -10,10 +10,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,5 +37,10 @@ public class SearchController {
         return searchService.searchPost(keyword, target, pageable)
                 .map(post -> { UserResponse userResponse = userService.mapToUserResponse(post.getUser());
                     return PostResponse.from(post, userResponse);});
+    }
+
+    @GetMapping("/history")
+    public ResponseEntity<Set<String>> getSearchHistory() {
+        return ResponseEntity.ok(searchService.getSearchHistory());
     }
 }
