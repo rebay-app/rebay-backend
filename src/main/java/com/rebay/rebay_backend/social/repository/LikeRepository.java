@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Repository
 public interface LikeRepository extends JpaRepository<Like, Long> {
@@ -21,12 +22,7 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
 
     void deleteByUserAndPost(User user, Post post);
 
-    /**
-     * 일주일 내 좋아요가 가장 많은 Post들을 좋아요 수 기준 내림차순으로 페이지 조회합니다.
-     * @param oneWeekAgo 현재 시간으로부터 일주일 전 시간
-     * @param pageable 페이지 정보 (PageRequest)
-     * @return Post 엔티티의 Page 객체
-     */
+    // 일주일 내 좋아요가 가장 많은 Post들을 좋아요 수 기준 내림차순으로 페이지 조회합니다.
     @Query(
             value = "SELECT p.* " +
                     "FROM posts p " +
@@ -37,14 +33,21 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
                     "    GROUP BY l.post_id " +
                     ") AS weekly_likes " +
                     "ON p.id = weekly_likes.post_id " +
-                    "ORDER BY weekly_likes.like_count DESC",
-            countQuery = "SELECT COUNT(DISTINCT l.post_id) " +
-                    "FROM likes l " +
-                    "WHERE l.created_at >= :oneWeekAgo",
+                    "ORDER BY weekly_likes.like_count DESC " +
+                    "LIMIT 10", // 👈 상위 10개만 조회하도록 추가
             nativeQuery = true
     )
-    Page<Post> findTopLikedPostsLastWeek(
-            @Param("oneWeekAgo") LocalDateTime oneWeekAgo,
-            Pageable pageable
-    );
+    List<Post> findTopLikedPostsLastWeek(@Param("oneWeekAgo") LocalDateTime oneWeekAgo);
+
+    // 특정 유저가 좋아요를 누른 게시글들의 카테고리별 카운트와 Post ID를 조회
+    @Query(
+            value = "SELECT p.category, COUNT(l.post_id), STRING_AGG(l.post_id::text, ',') " +
+                    "FROM likes l " +
+                    "JOIN posts p ON l.post_id = p.id " +
+                    "WHERE l.user_id = :userId " +
+                    "GROUP BY p.category " +
+                    "ORDER BY COUNT(l.post_id) DESC",
+            nativeQuery = true
+    )
+    List<Object[]> findLikedCategoryScoresAndPostIds(@Param("userId") Long userId);
 }

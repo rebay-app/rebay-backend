@@ -13,6 +13,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -40,5 +43,15 @@ public class SearchService {
             case USERNAME -> postRepository.findByUsernameContains(kw, pageable);
             case HASHTAG -> postRepository.findByHashtagExact(kw, pageable);
         };
+    }
+
+    public Set<String> getSearchHistory() {
+        User currentUser = authenticationService.getCurrentUser();
+        List<Search> history = searchRepository.findByUserIdOrderByCreatedAt(currentUser.getId());
+        Set<String> keywordList = history.stream()
+                .map(Search::getKeyword)
+                .collect(Collectors.toSet());
+
+        return keywordList;
     }
 }

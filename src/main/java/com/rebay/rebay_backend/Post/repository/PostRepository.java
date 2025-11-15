@@ -9,6 +9,8 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+
 public interface PostRepository extends JpaRepository<Post, Long> {
 
 
@@ -49,4 +51,9 @@ public interface PostRepository extends JpaRepository<Post, Long> {
        WHERE LOWER(h.name) = LOWER(:name)
     """)
     Page<Post> findByHashtagExact(@Param("name") String name, Pageable pageable);
+
+    // 이미 판매 완료되거나, 사용자가 작성한 게시글 제외하고 조회
+    @Query("SELECT p FROM Post p " +
+            "WHERE p.status <> 'SOLD' AND p.user.id <> :userId")
+    List<Post> findRecommendationCandidates(@Param("userId") Long userId);
 }
