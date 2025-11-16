@@ -43,4 +43,13 @@ public class SearchController {
     public ResponseEntity<Set<String>> getSearchHistory() {
         return ResponseEntity.ok(searchService.getSearchHistory());
     }
+
+    @GetMapping("/suggest")
+    public Page<String> suggest(
+            @RequestParam String keyword,
+            @RequestParam SearchTarget target,
+            @PageableDefault(size = 10) Pageable pageable
+    ) {
+        return searchService.suggest(keyword, target, pageable);
+    }
 }

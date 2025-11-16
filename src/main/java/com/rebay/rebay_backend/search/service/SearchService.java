@@ -54,4 +54,16 @@ public class SearchService {
 
         return keywordList;
     }
+
+    public Page<String> suggest(String keyword, SearchTarget target , Pageable pageable) {
+        if (keyword == null || keyword.trim().isEmpty()) {
+            return Page.empty(pageable);
+        }
+
+        return switch (target) {
+            case TITLE -> postRepository.suggestTitle(keyword, pageable);
+            case USERNAME -> postRepository.suggestUsername(keyword, pageable);
+            case HASHTAG -> postRepository.suggestHashtag(keyword, pageable);
+        };
+    }
 }
