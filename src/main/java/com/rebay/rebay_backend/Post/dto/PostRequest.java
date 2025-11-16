@@ -25,14 +25,11 @@ public class PostRequest {
     private BigDecimal price;
 
     @NotNull(message = "Category is required")
-    private Category category;
+    private int categoryCode;
 
     private SaleStatus status;
 
     private String imageUrl;
 
     private List<String> hashtags;
-
-
-
 }

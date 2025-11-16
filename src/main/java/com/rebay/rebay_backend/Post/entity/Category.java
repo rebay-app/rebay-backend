@@ -24,7 +24,7 @@ public class Category {
     private Long id;            // 내부 관리용 Primary Key
 
     @Column(unique = true, nullable = false)
-    private String code;        // 200, 210, 211 등 분류 코드
+    private int code;        // 200, 210, 211 등 분류 코드
 
     private String name;        // 카테고리 이름 (예: 아이폰13)
 
@@ -36,4 +36,5 @@ public class Category {
     @JsonIgnore
     @OneToMany(mappedBy = "parent", fetch = FetchType.LAZY)
     private Set<Category> children;
+
 }

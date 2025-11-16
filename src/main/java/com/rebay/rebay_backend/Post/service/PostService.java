@@ -2,10 +2,12 @@ package com.rebay.rebay_backend.Post.service;
 
 import com.rebay.rebay_backend.Post.dto.PostRequest;
 import com.rebay.rebay_backend.Post.dto.PostResponse;
+import com.rebay.rebay_backend.Post.entity.Category;
 import com.rebay.rebay_backend.Post.entity.Hashtag;
 import com.rebay.rebay_backend.Post.entity.Post;
 import com.rebay.rebay_backend.Post.entity.SaleStatus;
 import com.rebay.rebay_backend.Post.exception.UnauthorizedException;
+import com.rebay.rebay_backend.Post.repository.CategoryRepository;
 import com.rebay.rebay_backend.Post.repository.HashTagRepository;
 import com.rebay.rebay_backend.Post.repository.PostRepository;
 import com.rebay.rebay_backend.social.repository.LikeRepository;
@@ -28,6 +30,7 @@ public class PostService {
     private final PostRepository postRepository;
     private final AuthenticationService authenticationService;
     private final UserService userService;
+    private final CategoryRepository categoryRepository;
     private final LikeRepository likeRepository;
     private final HashTagRepository hashTagRepository;
 
@@ -35,11 +38,15 @@ public class PostService {
 
         User currentUser = authenticationService.getCurrentUser();
 
+        Category currentCategory = categoryRepository.findByCode(request.getCategoryCode())
+                .orElseThrow(() -> new ResourceNotFoundException("카테고리를 찾을 수 없습니다."));
+
         Post post = Post.builder()
+
                 .title(request.getTitle())
                 .content(request.getContent())
                 .price(request.getPrice())
-                .category(request.getCategory())
+                .category(currentCategory)
                 .imageUrl(request.getImageUrl())
                 .status(SaleStatus.ON_SALE)
                 .user(currentUser)
@@ -117,6 +124,9 @@ public class PostService {
 
         User currentUser = authenticationService.getCurrentUser();
 
+        Category currentCategory = categoryRepository.findByCode(request.getCategoryCode())
+                .orElseThrow(() -> new ResourceNotFoundException("카테고리를 찾을 수 없습니다."));
+
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new ResourceNotFoundException("Post not found"));
 
@@ -127,7 +137,7 @@ public class PostService {
         post.setTitle(request.getTitle());
         post.setContent(request.getContent());
         post.setPrice(request.getPrice());
-        post.setCategory(request.getCategory());
+        post.setCategory(currentCategory);
         post.setStatus(request.getStatus() == null ? SaleStatus.ON_SALE: request.getStatus() );
         post.setImageUrl(request.getImageUrl());
 

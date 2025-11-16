@@ -18,6 +18,8 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
     @Query("SELECT COUNT(l) FROM Like l WHERE l.post.id = :postId")
     Long countByPostId(@Param("postId") Long postId);
 
+    Long countByUserId(Long userId);
+
     boolean existsByUserAndPost(User user, Post post);
 
     void deleteByUserAndPost(User user, Post post);
@@ -41,11 +43,11 @@ public interface LikeRepository extends JpaRepository<Like, Long> {
 
     // 특정 유저가 좋아요를 누른 게시글들의 카테고리별 카운트와 Post ID를 조회
     @Query(
-            value =  "SELECT p.category_id, COUNT(l.post_id), STRING_AGG(l.post_id::text, ',') " +
+            value =  "SELECT p.category_code, COUNT(l.post_id), STRING_AGG(l.post_id::text, ',') " +
                     "FROM likes l " +
                     "JOIN posts p ON l.post_id = p.id " +
                     "WHERE l.user_id = :userId " +
-                    "GROUP BY p.category_id " +
+                    "GROUP BY p.category_code " +
                     "ORDER BY COUNT(l.post_id) DESC",
             nativeQuery = true
     )

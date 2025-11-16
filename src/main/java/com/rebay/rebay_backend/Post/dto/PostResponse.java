@@ -25,7 +25,7 @@ public class PostResponse {
     private String content;
     private BigDecimal price;
     private String imageUrl;
-    private Long categoryId;
+    private int categoryCode;
     private SaleStatus status;
     private Integer viewCount;
     private UserResponse user;
@@ -43,7 +43,7 @@ public class PostResponse {
                 .content(post.getContent())
                 .price(post.getPrice())
                 .imageUrl(post.getImageUrl())
-                .categoryId(post.getCategory().getId())
+                .categoryCode(post.getCategory().getCode())
                 .viewCount(post.getViewCount())
                 .status(post.getStatus())
                 .hashtags(post.getHashtags().stream()

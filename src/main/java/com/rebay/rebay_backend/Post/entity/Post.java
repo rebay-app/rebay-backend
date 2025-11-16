@@ -43,7 +43,7 @@ public class Post {
     private String imageUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", nullable = false)
+    @JoinColumn(name = "category_code", referencedColumnName = "code", nullable = false)
     private Category category;
 
     @Enumerated(EnumType.STRING)
@@ -86,7 +86,7 @@ public class Post {
         hashtag.getPosts().remove(this);
     }
 
-    public boolean isInCategory(String targetCode) {
+    public boolean isInCategory(int targetCode) {
         if (this.category == null) {
             return false;
         }
@@ -94,7 +94,7 @@ public class Post {
         Category current = this.category;
         while (current != null) {
             // 현재 카테고리 또는 부모 카테고리의 코드를 확인
-            if (current.getCode().equals(targetCode)) {
+            if (current.getCode() == targetCode) {
                 return true;
             }
             // 다음 상위 레벨로 이동
