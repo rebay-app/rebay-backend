@@ -1,5 +1,6 @@
 package com.rebay.rebay_backend.Post.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.rebay.rebay_backend.social.entity.Like;
 import com.rebay.rebay_backend.user.entity.User;
 import jakarta.persistence.*;
@@ -41,8 +42,9 @@ public class Post {
     @Column(name = "image_url", columnDefinition = "TEXT")
     private String imageUrl;
 
-    @Enumerated(EnumType.STRING)
-    private ProductCategory category;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_code", referencedColumnName = "code", nullable = false)
+    private Category category;
 
     @Enumerated(EnumType.STRING)
     private SaleStatus status;
@@ -59,6 +61,7 @@ public class Post {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "post", fetch = FetchType.LAZY)
     @Builder.Default
     private Set<Like> likes = new HashSet<>();
@@ -83,4 +86,20 @@ public class Post {
         hashtag.getPosts().remove(this);
     }
 
+    public boolean isInCategory(int targetCode) {
+        if (this.category == null) {
+            return false;
+        }
+
+        Category current = this.category;
+        while (current != null) {
+            // 현재 카테고리 또는 부모 카테고리의 코드를 확인
+            if (current.getCode() == targetCode) {
+                return true;
+            }
+            // 다음 상위 레벨로 이동
+            current = current.getParent();
+        }
+        return false;
+    }
 }

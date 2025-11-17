@@ -26,5 +26,7 @@ public interface TransactionRepository extends JpaRepository<Transaction, Long> 
 
     List<Transaction> findByStatus(TransactionStatus status);
 
-//    List<Post> findByStatus(SaleStatus status);
+    List<Transaction> findByStatusAndPostCategoryCode(TransactionStatus status, int categoryCode);
+
+    //    List<Post> findByStatus(SaleStatus status);
 }

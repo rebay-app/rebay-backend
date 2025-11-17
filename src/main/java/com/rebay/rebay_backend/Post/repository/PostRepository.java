@@ -56,4 +56,32 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     @Query("SELECT p FROM Post p " +
             "WHERE p.status <> 'SOLD' AND p.user.id <> :userId")
     List<Post> findRecommendationCandidates(@Param("userId") Long userId);
+
+    @Query("""
+    SELECT DISTINCT p.title
+    FROM Post p
+    WHERE LOWER(p.title) LIKE LOWER(CONCAT('%', :keyword, '%'))
+    ORDER BY p.title ASC
+    """)
+    Page<String> suggestTitle(@Param("keyword") String keyword, Pageable pageable);
+
+    @Query("""
+    SELECT DISTINCT u.username
+    FROM Post p
+    JOIN p.user u
+    WHERE LOWER(u.username) LIKE LOWER(CONCAT('%', :keyword, '%'))
+    ORDER BY u.username ASC
+    """)
+    Page<String> suggestUsername(@Param("keyword") String keyword, Pageable pageable);
+
+    @Query("""
+    SELECT DISTINCT h.name
+    FROM Post p
+    JOIN p.hashtags h
+    WHERE LOWER(h.name) LIKE LOWER(CONCAT('%', :keyword, '%'))
+    ORDER BY h.name ASC
+    """)
+    Page<String> suggestHashtag(@Param("keyword") String keyword, Pageable pageable);
+
+    List<Post> findByCategoryCode(int categoryCode);
 }
