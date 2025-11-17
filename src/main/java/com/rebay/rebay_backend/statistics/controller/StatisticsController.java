@@ -4,7 +4,10 @@ import com.rebay.rebay_backend.Post.dto.PostResponse;
 import com.rebay.rebay_backend.Post.service.PostService;
 import com.rebay.rebay_backend.review.service.ReviewService;
 import com.rebay.rebay_backend.social.service.FollowService;
+import com.rebay.rebay_backend.statistics.dto.TradeHistory;
 import com.rebay.rebay_backend.statistics.service.StatisticsService;
+import com.rebay.rebay_backend.user.entity.User;
+import com.rebay.rebay_backend.user.service.AuthenticationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -27,6 +30,7 @@ public class StatisticsController {
     private final PostService postService;
     private final FollowService followService;
     private final StatisticsService statisticsService;
+    private final AuthenticationService authenticationService;
 
     @GetMapping("/userProfile/{userId}")
     public ResponseEntity<Map<String,Long>> getStatisticsByUserProfile(@PathVariable Long userId) {
@@ -63,5 +67,9 @@ public class StatisticsController {
     }
 
     // 시세
-    // 요새 많이 팔려요 = 일주일 간 잘 팔린 품목
+    @GetMapping("/tradeHistory/{categoryCode}")
+    public ResponseEntity<List<TradeHistory>> getTradeHistory(@PathVariable int categoryCode) {
+        return ResponseEntity.ok(statisticsService.getTradeHistory(categoryCode));
+    }
+
 }

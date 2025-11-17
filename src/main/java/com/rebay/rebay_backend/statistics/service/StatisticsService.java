@@ -7,10 +7,14 @@ import com.rebay.rebay_backend.Post.entity.Post;
 import com.rebay.rebay_backend.Post.entity.ProductCategory;
 import com.rebay.rebay_backend.Post.repository.CategoryRepository;
 import com.rebay.rebay_backend.Post.repository.PostRepository;
+import com.rebay.rebay_backend.payment.entity.Transaction;
+import com.rebay.rebay_backend.payment.entity.TransactionStatus;
 import com.rebay.rebay_backend.payment.repository.PaymentRepository;
+import com.rebay.rebay_backend.payment.repository.TransactionRepository;
 import com.rebay.rebay_backend.search.repository.SearchRepository;
 import com.rebay.rebay_backend.social.repository.LikeRepository;
 import com.rebay.rebay_backend.statistics.dto.RecommendedPostDto;
+import com.rebay.rebay_backend.statistics.dto.TradeHistory;
 import com.rebay.rebay_backend.user.dto.UserResponse;
 import com.rebay.rebay_backend.user.entity.User;
 import com.rebay.rebay_backend.user.repository.UserRepository;
@@ -45,6 +49,7 @@ public class StatisticsService {
     private final LikeRepository likeRepository;
     private final PostRepository postRepository;
     private final CategoryRepository categoryRepository;
+    private final TransactionRepository transactionRepository;
     private final UserService userService;
     private final AuthenticationService authenticationService;
 
@@ -191,7 +196,7 @@ public class StatisticsService {
 
             long daysSinceSearch = ChronoUnit.DAYS.between(createdAt, LocalDateTime.now());
             double timeWeight = 1.0 - ((double) daysSinceSearch / TIME_PERIOD_DAYS);
-            
+
             weightedScores.merge(keyword, timeWeight, Double::sum);
         }
         return weightedScores;
@@ -260,5 +265,17 @@ public class StatisticsService {
             score += searchScores.getOrDefault(tag.getName(), 0.0);
         }
         return score;
+    }
+
+    public List<TradeHistory> getTradeHistory(int categoryCode) {
+        List<Transaction> transactions = transactionRepository.findByStatusAndPostCategoryCode(TransactionStatus.COMPLETED, categoryCode);
+        List<TradeHistory> history = transactions.stream().map((transaction) ->
+                TradeHistory.builder()
+                        .transactionId(transaction.getId())
+                        .purchasedAt(transaction.getCreatedAt())
+                        .price(transaction.getPost().getPrice())
+                        .build()).toList();
+
+        return history;
     }
 }
