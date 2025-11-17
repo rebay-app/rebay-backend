@@ -82,4 +82,6 @@ public interface PostRepository extends JpaRepository<Post, Long> {
     ORDER BY h.name ASC
     """)
     Page<String> suggestHashtag(@Param("keyword") String keyword, Pageable pageable);
+
+    List<Post> findByCategoryCode(int categoryCode);
 }

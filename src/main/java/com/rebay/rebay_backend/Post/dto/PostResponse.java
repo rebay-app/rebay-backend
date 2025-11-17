@@ -1,5 +1,6 @@
 package com.rebay.rebay_backend.Post.dto;
 
+import com.rebay.rebay_backend.Post.entity.Category;
 import com.rebay.rebay_backend.Post.entity.Post;
 import com.rebay.rebay_backend.Post.entity.ProductCategory;
 import com.rebay.rebay_backend.Post.entity.SaleStatus;
@@ -24,7 +25,7 @@ public class PostResponse {
     private String content;
     private BigDecimal price;
     private String imageUrl;
-    private ProductCategory category;
+    private int categoryCode;
     private SaleStatus status;
     private Integer viewCount;
     private UserResponse user;
@@ -42,7 +43,7 @@ public class PostResponse {
                 .content(post.getContent())
                 .price(post.getPrice())
                 .imageUrl(post.getImageUrl())
-                .category(post.getCategory())
+                .categoryCode(post.getCategory().getCode())
                 .viewCount(post.getViewCount())
                 .status(post.getStatus())
                 .hashtags(post.getHashtags().stream()
