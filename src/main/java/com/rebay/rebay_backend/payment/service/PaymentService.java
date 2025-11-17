@@ -3,6 +3,7 @@ package com.rebay.rebay_backend.payment.service;
 import com.rebay.rebay_backend.Post.entity.Post;
 import com.rebay.rebay_backend.Post.entity.SaleStatus;
 import com.rebay.rebay_backend.Post.repository.PostRepository;
+import com.rebay.rebay_backend.payment.config.TossPaymentConfig;
 import com.rebay.rebay_backend.payment.dto.PaymentRequest;
 import com.rebay.rebay_backend.payment.dto.TossPaymentRequest;
 import com.rebay.rebay_backend.payment.dto.TossPaymentResponse;
@@ -37,6 +38,7 @@ public class PaymentService {
     private final TossPaymentsApiClient tossPaymentsApiClient;
     private final UserRepository userRepository;
     private final PostRepository postRepository;
+    private final TossPaymentConfig tossPaymentConfig;
 
 
     // 결제 준비 : Transaction, Payment 생성
@@ -226,6 +228,7 @@ public class PaymentService {
                 .sellerId(seller.getId())
                 .sellerName(seller.getUsername())
                 .isReceived(transaction.getIsReceived())
+                .clientKey(tossPaymentConfig.getClientKey())
                 .receivedAt(transaction.getReceivedAt())
                 .status(transaction.getStatus())
                 .orderId(orderId)
