@@ -25,12 +25,13 @@ public class TransactionResponse {
     private Long sellerId;
     private String sellerName;
     private Boolean isReceived;
+    private String clientKey;
     private LocalDateTime receivedAt;
     private TransactionStatus status;
     private String orderId;
     private LocalDateTime createdAt;
 
-    public static TransactionResponse from(Transaction transaction, String orderId) {
+    public static TransactionResponse from(Transaction transaction, String orderId, String clientKey) {
         return TransactionResponse.builder()
                 .id(transaction.getId())
                 .postId(transaction.getPost().getId())
@@ -41,6 +42,7 @@ public class TransactionResponse {
                 .sellerId(transaction.getSeller().getId())
                 .sellerName(transaction.getSeller().getUsername())
                 .isReceived(transaction.getIsReceived())
+                .clientKey(clientKey)
                 .receivedAt(transaction.getReceivedAt())
                 .status(transaction.getStatus())
                 .orderId(orderId)
