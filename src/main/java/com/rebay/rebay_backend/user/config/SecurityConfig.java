@@ -42,6 +42,7 @@ public class SecurityConfig {
                                 "/api/auth/**",
                                 "/error",
                                 "/api/user/findPassword",
+                                "/api/user/resetPassword",
                                 "/api/upload/post/image",
                                 "/api/statistics/top10Keyword",
                                 "/api/statistics/popular",
