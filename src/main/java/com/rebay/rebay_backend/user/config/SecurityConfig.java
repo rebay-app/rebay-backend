@@ -41,6 +41,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/api/auth/**",
                                 "/error",
+                                "/api/user/findPassword",
                                 "/api/upload/post/image",
                                 "/api/statistics/top10Keyword",
                                 "/api/statistics/popular",
