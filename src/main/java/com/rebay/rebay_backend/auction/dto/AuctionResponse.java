@@ -26,7 +26,7 @@ public class AuctionResponse {
     private BigDecimal currentPrice;
     private LocalDateTime startTime;
     private LocalDateTime endTime;
-    private Integer viewCount = 0;
+    private Integer viewCount;
     private String imageUrl;
     private int categoryCode;
     private SaleStatus status;
