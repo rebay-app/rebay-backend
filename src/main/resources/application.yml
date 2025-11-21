@@ -45,7 +45,7 @@ toss:
       base-url: https://api.tosspayments.com/v1
 
 server:
-  port: 3000
+  port: 8080
 
 frontend:
   url: ${FRONTEND_URL}
